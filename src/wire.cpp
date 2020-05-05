@@ -101,7 +101,7 @@ void Wire::updateInspector(QTableWidget * w){
     w->setItem(1,1, new QTableWidgetItem(QString(av_get_pix_fmt_name(
                                                     ctx->outputs[idx]->format))));
     w->setItem(2,0, new QTableWidgetItem("Frames passed"));
-    w->setItem(2,1, new QTableWidgetItem(QString::number(ctx->outputs[idx]->frame_count)));
+    w->setItem(2,1, new QTableWidgetItem(QString::number(ctx->outputs[idx]->frame_count_in)));
     w->setItem(3,0, new QTableWidgetItem("Width"));
     w->setItem(3,1, new QTableWidgetItem(QString::number(ctx->outputs[idx]->w)));
     w->setItem(4,0, new QTableWidgetItem("Height"));

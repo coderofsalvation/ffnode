@@ -25,7 +25,7 @@
 #define FILTERSWIDGET_H
 
 #include "ui_filtersWidget.h"
-#include <filter.h>
+#include "filter.h"
 #include "player.h"
 #include "externs.h"
 #include <QHash>

@@ -25,7 +25,7 @@
 #define FILTERSLIST_H
 
 #include "ui_filtersList.h"
-#include <filter.h>
+#include "filter.h"
 #include <QHash>
 #include <QObject>
 #include <QEvent>

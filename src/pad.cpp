@@ -105,9 +105,9 @@ void Pad::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     QPixmap p;
     
     if(!selected)
-        p.load(":/pad1.svg");
+        p.load(":/pad1.png");
     else
-        p.load(":/padC.svg");
+        p.load(":/padC.png");
     
     painter->drawImage(boundingRect(), p.toImage(), p.rect());
     if(connectedTo()){

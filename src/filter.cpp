@@ -295,16 +295,16 @@ QVariant Filter::itemChange(GraphicsItemChange change, const QVariant & value){
 void Filter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF rect = boundingRect();
-    QPixmap p(":/filt1.svg");
+    QPixmap p(":/filt1.png");
     painter->drawImage(rect, p.toImage(), p.rect());
     if(this->selected){
-        QPixmap p(":/filt1S.svg");
         painter->drawImage(rect, p.toImage(), p.rect()); 
+		QPixmap p(":/filt1S.png");
     }
     
     QFont font=painter->font();
     font.setWeight(QFont::Bold);
-    font.setPointSize ( 14 );
+    font.setPointSize ( 9 );
     painter->setFont(font); 
     QPen pen2(Qt::black, 3);
     painter->setPen(pen2);

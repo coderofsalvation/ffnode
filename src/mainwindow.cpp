@@ -25,6 +25,7 @@
 #include "filtersList.h"
 #include "pipelineParser.h"
 #include "pipelineSaver.h"
+#include <stdio.h>
 
 /**
  * Construrs and destructor
@@ -291,7 +292,7 @@ void MainWindow::createFilterBar()
     AVFilter *avfil = NULL;
     while((avfil = avfilter_next(avfil))){
         int i = 0;
-        
+/*        
         bool onlyVideo=(avfilter_pad_count(avfil->inputs)>=1);
         for( ; i < avfilter_pad_count(avfil->inputs); i++){
             if(avfilter_pad_get_type(avfil->inputs, i) != AVMEDIA_TYPE_VIDEO)
@@ -304,6 +305,8 @@ void MainWindow::createFilterBar()
                 onlyVideo=false;
             }
         }
+*/
+		bool onlyVideo = true;
         if(onlyVideo){
             if(QString(avfil->name).compare("input") != 0 ){
                 scene->filtersSize[QString(avfil->name)] = QSize(
@@ -351,13 +354,14 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 void MainWindow::connectWire(){
     Pad * in = NULL;
     Pad * out = NULL;
+	printf("!\n");
     for(auto f : scene->filters){
+		printf("1\n");
         if(f->getInPad() != NULL && f->getInPad()->isSelected()){
             in = f->getInPad();
             in->setSelected(false);
             in->setIsSelected(false);
-        }
-        else if(f->getInPad2() != NULL && f->getInPad2()->isSelected()){
+        }else if(f->getInPad2() != NULL && f->getInPad2()->isSelected()){
             in = f->getInPad2();
             in->setSelected(false);
             in->setIsSelected(false);
@@ -366,18 +370,24 @@ void MainWindow::connectWire(){
             out = f->getOutPad();
             out->setSelected(false);
             out->setIsSelected(false);
-        }
-        else if(f->getOutPad2() != NULL && f->getOutPad2()->isSelected()){
+        }else if(f->getOutPad2() != NULL && f->getOutPad2()->isSelected()){
             out = f->getOutPad2();
             out->setSelected(false);
             out->setIsSelected(false);
         }
     }
-    
-    if(in != NULL && out != NULL && in->getParent() != out->getParent()
-            && !in->connectedTo() && !out->connectedTo()){
+	printf("in %i\n",in);
+	printf("out %i\n",out);
+	printf("3\n");
+	printf("4\n");
+    if( in != NULL && out != NULL && 
+		in->getParent() != out->getParent() && 
+		!in->connectedTo() && !out->connectedTo()){
+		printf("5\n");
         Wire * w = new Wire(scene);
+		printf("6\n");
         w->setConnection(out,in, c);
+		printf("7\n");
         c->updateWires(in);
     }
 }

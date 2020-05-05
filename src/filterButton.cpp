@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 
@@ -24,6 +24,7 @@
 
 #include "filterButton.h"
 #include "scene.h"
+#include <stdio.h>
 
 /**
  *  Constructors and destructors
@@ -49,17 +50,18 @@ FilterButton::~FilterButton() {}
  */
 
 QPixmap FilterButton::createPixmap() {
-    
-    QPixmap p(":/filt1.svg");
-    QPixmap finalIcon = p.scaled(200,50);
+	int w = 150;
+	int h = 30;
+    QPixmap p(":/filt1.png");
+    QPixmap finalIcon = p.scaled(w,h);
     
     QPainter painter(&finalIcon);
     QFont font = painter.font();
-    font.setWeight(QFont::Bold);
-    font.setPointSize ( 14 );
+    //font.setWeight(QFont::Bold);
+    font.setPointSize ( 9 );
     painter.setFont(font); 
 
-    QRect r(20, 0, 160,50);
+    QRect r(0, 0, w,h);
     painter.drawText(r, Qt::AlignCenter | Qt::TextWrapAnywhere, 
                      property("name").toString());
     QSize size;
@@ -87,30 +89,30 @@ QPixmap FilterButton::createPixmap() {
 void FilterButton::drawPixmap(QPainter * painter, const QSize & size){
     
     if(size.width() == 1){
-        painter->drawImage(  QRect(0,16,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+        painter->drawImage( QRect(1,9,18,18), 
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18));
     }
     else if(size.width() == 2){
         painter->drawImage(  QRect(0,2,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18));
         painter->drawImage(  QRect(0,30,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18));
     }
     
     if(size.height() == 1){
         painter->drawImage(  QRect(182,16,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18)); 
     }
     else if(size.height() == 2){
         painter->drawImage(  QRect(182,2,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18));
-        painter->drawImage(  QRect(182,30,18,18), 
-                            QPixmap(":/pad1.svg").scaled(18,18).toImage(),
+        painter->drawImage( QRect(182,30,18,18), 
+                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
                             QRect(0,0,18,18));
     }
 }
