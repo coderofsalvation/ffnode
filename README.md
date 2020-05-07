@@ -1,3 +1,5 @@
+![](ffnode.gif)
+
 # FFnode 
 
 FFnode is an open-source video filter graph editor 
@@ -24,9 +26,6 @@ FFnode is an open-source video filter graph editor
 - FFmpeg 3.2.4
 - Qt5
 
-## How it looks: 
-
-!]\(ffnode.gif)
 
 ## Credits 
 
