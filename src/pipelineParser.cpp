@@ -93,21 +93,22 @@ void PipelineParser::parseTxt(const QString& filename){
  */
 
 void PipelineParser::parseXml(const QString& filename){
-   
-        QFile file(filename);
-        
-	if (!file.open(QFile::ReadOnly | QFile::Text))
-	{
-                    #warning do errors
-	}
-        
-        QXmlStreamReader Rxml;
-	Rxml.setDevice(&file);
-        
-        QString filtName;
-        QPointF pos;
-        QHash<int, QString> padNames;
-        QHash<QString, QString> parameters;
+	QXmlStreamReader Rxml;
+	QFile file(filename);
+	if( filename.at(0) == '<' ){
+	     Rxml.addData(filename);
+	}else{ // is file
+		if (!file.open(QFile::ReadOnly | QFile::Text))
+		{
+						#warning do errors
+		}	
+		Rxml.setDevice(&file);
+	}  
+	
+	QString filtName;
+	QPointF pos;
+	QHash<int, QString> padNames;
+	QHash<QString, QString> parameters;
         
 	while(!Rxml.atEnd() && !Rxml.hasError())
 	{

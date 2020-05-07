@@ -53,7 +53,8 @@ void Wire::setConnection(Pad*p1, Pad*p2, Connectivity * c){
     line = new QGraphicsLineItem(QLineF(p1->sceneBoundingRect().center(),
                                         p2->sceneBoundingRect().center()));
     
-    line->setPen(QPen(Qt::blue, 5, Qt::SolidLine));
+	//QColor(255,183,22,60)
+    line->setPen(QPen(QColor(70,70,70), 1, Qt::SolidLine));
     
     padIn = p1;
     padOut = p2;

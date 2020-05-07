@@ -34,7 +34,8 @@ QMap<QString, QSize> Scene::filtersSize;
  *  Constructors and destructor
  */
 
-Scene::Scene(Connectivity * c) : connectivity(c){}
+Scene::Scene(Connectivity * c) : connectivity(c){
+}
 Scene::Scene(const Scene& orig){}
 Scene::~Scene(){}
 //------------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Scene::~Scene(){}
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     event->setAccepted(true);
+	this->mainwindow->cursTogled();
     update();
 }
 //------------------------------------------------------------------------------
@@ -57,7 +59,17 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 void Scene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 {
     update();
+	this->mainwindow->cursTogled();
 }
+
+
+void Scene::mousePressEvent(QGraphicsSceneMouseEvent* e){
+	    if ( e->button() == Qt::RightButton ){
+			this->mainwindow->showF();
+		}	
+        Scene::mouseDoubleClickEvent( e ); // bubble up
+}
+
 //------------------------------------------------------------------------------
 
 /**
@@ -91,5 +103,9 @@ void Scene::createNewFilter(const QString & name, QPointF position){
     filters.push_back(f);
     this->addItem(f);  
     this->update();
+}
+
+void Scene::setMainWindow( MainWindow *w ){
+	this->mainwindow = w;
 }
 //------------------------------------------------------------------------------

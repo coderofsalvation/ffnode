@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = FFmpegGUI
+TARGET = ffnode
 INCLUDEPATH += .
 
 # The following define makes your compiler warn you if you use any
@@ -57,7 +57,7 @@ SOURCES += src/connectivity.cpp \
            src/wire.cpp
 RESOURCES += images.qrc
 QT += gui core widgets
-TARGET = FFmpegGUI
+TARGET = ffnode
 CONFIG += c++11
 QMAKE_CLAGS += -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS
 QMAKE_CXXFLAGS+= -fpermissive -std=c++0x

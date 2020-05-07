@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 
@@ -30,6 +30,9 @@
 Pipeline::Pipeline() {
     format=NULL;
     format=avformat_alloc_context();
+	av_register_all();
+    avfilter_register_all();
+    avcodec_register_all();
 }
 
 Pipeline::Pipeline(const Pipeline& orig) {
@@ -60,39 +63,68 @@ Pipeline::Pipeline(QString p, QString f) : path(p), filter(f){
  *  Creates and setups format context.
  *  Initializes decoder.
  */
-
 void Pipeline::loadContext() {
     AVCodec *dec;
+	AVCodecParameters *pars;
+	AVCodec *codec;
     if(avformat_open_input(&format, path.trimmed().toStdString().c_str(), NULL, NULL) < 0)
-        printf("not a video file.");
+        throw std::runtime_error("Failed to open video file.");
     
     avformat_find_stream_info(format, NULL);
-    int ret = av_find_best_stream(format, AVMEDIA_TYPE_VIDEO, -1, -1, &dec, 0);
+	int ret = av_find_best_stream(format, AVMEDIA_TYPE_VIDEO, -1, -1, &dec, 0);
     if (ret < 0) {
         throw std::runtime_error("Cannot find a video stream in the input file");
         return ret;
     }
+	/*
+	video_stream = ret;
+	printf("finding decoder\n");
+	dec = avcodec_find_encoder( format->streams[video_stream]->codecpar->codec_id);
+	if (dec==NULL) throw std::runtime_error("ERROR unsupported codec!\n");
     
+	decoder_ctx = avcodec_alloc_context3(dec);
+	if (avcodec_parameters_to_context(decoder_ctx, format->streams[video_stream]->codecpar) < 0)
+		throw std::runtime_error("failed to copy codec params to codec context\n");
+	*/
+	
     for(int i=0; i < format->nb_streams; i++){
-        //if(format->streams[i]->codec->codec_type==AVMEDIA_TYPE_VIDEO) {
-            video_stream = i;
-            break;
-        //}
-        video_stream = -1;
+		//if( avcodec_find_encoder(format->streams[i]->codec->codec_id)->type  == AVMEDIA_TYPE_VIDEO ){
+        if(format->streams[i]->codec->codec_type==AVMEDIA_TYPE_VIDEO) {
+            video_stream = i;	
+			pars = format->streams[i]->codecpar;
+			printf("1\n",video_stream);
+			printf("codec name=%i\n",video_stream);
+			break;
+        }
     }
-    if(video_stream==-1)
+	if(video_stream==-1)
         throw std::runtime_error("Cannot find a video stream in the input file");
+	dec = avcodec_find_decoder( format->streams[video_stream]->codecpar->codec_id );
+	if (dec==NULL) throw std::runtime_error("ERROR unsupported codec!\n");
     
-    decoder_ctx = format->streams[video_stream]->codec;
- 	char size[100];
+	printf("2\n",video_stream);
+	// create decoding context
+    decoder_ctx = avcodec_alloc_context3(dec);
+	if (!decoder_ctx) throw std::runtime_error("failed to allocated memory for AVCodecContext\n");
+	
+	printf("3\n",video_stream);
+	 if (avcodec_parameters_to_context(decoder_ctx, pars) < 0)
+		throw std::runtime_error("failed to copy codec params to codec context\n");
+    //decoder_ctx = format->streams[video_stream]->codec;
+    
+	char size[100];
 	snprintf(size, sizeof(size),"%dx%d",decoder_ctx->width, decoder_ctx->height);
 	printf("found %s source\n",size);
-	
-    if ((ret = avcodec_open2(decoder_ctx, dec, NULL)) < 0) {
+    
+	if (!decoder_ctx)
+		throw std::runtime_error("Cannot open a video decoder context");	  
+
+	// set fps basedon first video input
+	decoder_ctx->time_base = format->streams[video_stream]->time_base;
+	if ((ret = avcodec_open2(decoder_ctx, dec, NULL)) < 0) {
         throw std::runtime_error("Cannot open a video decoder");
         return ret;
     }
-	printf("play!\n");
 }
 //------------------------------------------------------------------------------
 
@@ -117,12 +149,22 @@ void Pipeline::createEndPoints(){
     AVFilter *buffersink = avfilter_get_by_name("buffersink");
     enum AVPixelFormat pix_fmts[] = { decoder_ctx->pix_fmt, AV_PIX_FMT_NONE};
 	
+	    /* buffer video source: the decoded frames from the decoder will be inserted here. */
+    /*
 	snprintf(args, sizeof(args),
+            "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
+            decoder_ctx->width, decoder_ctx->height, decoder_ctx->pix_fmt,
+            format->streams[video_stream]->time_base.num, 
+			format->streams[video_stream]->time_base.den,
+            decoder_ctx->sample_aspect_ratio.num, decoder_ctx->sample_aspect_ratio.den);
+*/
+    snprintf(args, sizeof(args),
             "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
             decoder_ctx->width, decoder_ctx->height, decoder_ctx->pix_fmt,
             decoder_ctx->time_base.num, decoder_ctx->time_base.den,
             decoder_ctx->sample_aspect_ratio.num, decoder_ctx->sample_aspect_ratio.den);
-    
+  
+	printf("%s\n",args); 
     ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
                                        args, NULL, filter_graph);
     if (ret < 0) {

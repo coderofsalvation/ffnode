@@ -111,9 +111,9 @@ void Pad::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     
     painter->drawImage(boundingRect(), p.toImage(), p.rect());
     if(connectedTo()){
-        painter->setBrush(QBrush(Qt::blue));
-        painter->drawEllipse(boundingRect().center(),boundingRect().width()/2-2,
-                                                    boundingRect().width()/2-2);
+        //painter->setBrush(QBrush(QColor(100,100,100)));
+        //painter->drawEllipse(boundingRect().center(),boundingRect().width()/4,
+        //                                            boundingRect().width()/4);
     }
 }
 //------------------------------------------------------------------------------

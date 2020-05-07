@@ -70,34 +70,34 @@ Filter::Filter(QString name, QSize inOut, QPointF pos) {
     
     if(inOut.height()==2)
     {
-        out = new Pad(QRectF(pos.x()+182, pos.y()+2,18.0, 18.0));
+        out = new Pad(QRectF(pos.x()+105, pos.y()+0,11.0, 11.0));
         out->setParent(this);
-        out2 = new Pad(QRectF(pos.x()+182, pos.y()+30,18.0, 18.0));
+        out2 = new Pad(QRectF(pos.x()+105, pos.y()+5,11.0, 11.0));
         out2->setParent(this);
     }  
     else{
         if(name != "output"){
-            out = new Pad(QRectF(pos.x()+182, pos.y()+16,18.0, 18.0));
+            out = new Pad(QRectF(pos.x()+105, pos.y()+10,11.0, 11.0));
             out->setParent(this);
         }
     }
     if(inOut.width()==2)
     {
-        in = new Pad(QRectF(pos.x(), pos.y()+2,18.0, 18.0));
+        in = new Pad(QRectF(pos.x()+5, pos.y()+0,11.0, 11.0));
         in->setParent(this);
-        in2 = new Pad(QRectF(pos.x(), pos.y()+30,18.0, 18.0));
+        in2 = new Pad(QRectF(pos.x()+5, pos.y()+15,11.0, 11.0));
         in2->setParent(this);
     }  
     else
     {
         if(name != "input"){
-            in = new Pad(QRectF(pos.x(), pos.y()+16,18.0, 18.0));
+            in = new Pad(QRectF(pos.x()+5, pos.y()+10,11.0, 11.0));
             in->setParent(this);
         }
     }
     
     setName(name); 
-    filterRect = QRectF(pos.x(), pos.y(),200.0, 50.0);
+    filterRect = QRectF(pos.x(), pos.y(),120.0, 30.0);
     ctx=NULL;
     initializeParams();
 }
@@ -301,12 +301,12 @@ void Filter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         painter->drawImage(rect, p.toImage(), p.rect()); 
 		QPixmap p(":/filt1S.png");
     }
-    
+   
     QFont font=painter->font();
     font.setWeight(QFont::Bold);
     font.setPointSize ( 9 );
     painter->setFont(font); 
-    QPen pen2(Qt::black, 3);
+    QPen pen2( QColor(200,200,200) );
     painter->setPen(pen2);
 
     QRect r(boundingRect().x() + 20,

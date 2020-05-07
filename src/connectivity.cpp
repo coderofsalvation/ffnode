@@ -130,7 +130,7 @@ Pad* Connectivity::getInput(){
         }
     }
     if(!in)
-        throw std::runtime_error("No input file specified.");
+        throw std::runtime_error(" file specified.");
     return in;
 }
 //------------------------------------------------------------------------------

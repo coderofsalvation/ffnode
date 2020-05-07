@@ -41,8 +41,11 @@
 
 FiltersList::FiltersList() {
     ui.setupUi(this);
-    
+    ui.tableWidget->verticalHeader()->setVisible(false); 
+	ui.tableWidget->horizontalHeader()->hide();
+	ui.tableWidget->setShowGrid(false);
     ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
+
     vert=true;
     toVerticalChange();
     connect(this, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
@@ -116,7 +119,7 @@ void FiltersList::toHorizontalChange(){
     ui.tableWidget->setColumnCount(0); 
     ui.tableWidget->setColumnCount(Scene::filtersSize.size()+2); 
     ui.tableWidget->setRowCount(1); 
-    QTableWidgetItem * h2 = new QTableWidgetItem("Name");
+    QTableWidgetItem * h2 = new QTableWidgetItem("Palette");
     ui.tableWidget->setVerticalHeaderItem(0, h2);
     ui.tableWidget->setCellWidget(0,0, new FilterButton("input"));
     ui.tableWidget->setCellWidget(0,1, new FilterButton("output"));
@@ -142,7 +145,7 @@ void FiltersList::toVerticalChange(){
     ui.tableWidget->setRowCount(0); 
     ui.tableWidget->setColumnCount(1); 
     ui.tableWidget->setRowCount(Scene::filtersSize.size()+2); 
-    QTableWidgetItem * h2 = new QTableWidgetItem("Name");
+    QTableWidgetItem * h2 = new QTableWidgetItem("Palette");
     ui.tableWidget->setHorizontalHeaderItem(0, h2);
     ui.tableWidget->setCellWidget(0,0, new FilterButton("input"));
     ui.tableWidget->setCellWidget(1,0, new FilterButton("output"));
@@ -156,7 +159,7 @@ void FiltersList::toVerticalChange(){
     ui.tableWidget->resizeColumnsToContents();
     ui.tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     ui.tableWidget->setColumnWidth(0,220);
-    ui.tableWidget->setMaximumWidth(247);
+    ui.tableWidget->setMaximumWidth(225);
     ui.tableWidget->setMaximumHeight(5000);
 }
 //------------------------------------------------------------------------------

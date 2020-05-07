@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 

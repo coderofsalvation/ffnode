@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+	/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 
@@ -31,6 +31,9 @@
 #include "filter.h"
 #include "connectivity.h"
 #include "filtersWidget.h"
+#include "mainwindow.h"
+
+class MainWindow;
 
 class Scene : public QGraphicsScene {
     
@@ -73,10 +76,22 @@ public:
      */
     void createNewFilter(const QString & name, QPointF position);
     //--------------------------------------------------------------------------
+
+    /**
+     *  set window 
+     */
+    void setMainWindow(MainWindow *mainwindow);
+    //--------------------------------------------------------------------------
+
 private:
     FilterParamsList *fw;
     Connectivity *  connectivity;
+	MainWindow *mainwindow;
 protected:
+    /**
+     * Drag entered event handler
+     */
+	void mousePressEvent(QGraphicsSceneMouseEvent* e);
     /**
      * Drag entered event handler
      */

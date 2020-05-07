@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FILTERS>
+    <FILTER>
+        <name>input</name>
+        <xpos>325</xpos>
+        <ypos>563</ypos>
+        <PAD>
+            <which>3</which>
+            <name>[T1]</name>
+        </PAD>
+        <PARAMETER>
+            <name>File</name>
+            <value>./ffnode.gif</value>
+        </PARAMETER>
+    </FILTER>
+    <FILTER>
+        <name>loop</name>
+        <xpos>481</xpos>
+        <ypos>542</ypos>
+        <PAD>
+            <which>1</which>
+            <name>[T7]</name>
+        </PAD>
+        <PAD>
+            <which>3</which>
+            <name>[T6]</name>
+        </PAD>
+        <PARAMETER>
+            <name>loop</name>
+            <value>-1</value>
+        </PARAMETER>
+        <PARAMETER>
+            <name>size</name>
+            <value>20</value>
+        </PARAMETER>
+        <PARAMETER>
+            <name>start</name>
+            <value>0</value>
+        </PARAMETER>
+    </FILTER>
+    <WIRE>
+        <pad1>[T1]</pad1>
+        <pad2>[T7]</pad2>
+    </WIRE>
+</FILTERS>

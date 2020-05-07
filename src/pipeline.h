@@ -26,25 +26,25 @@
 
 #include <QString>
 #include <QObject>
+#include <stdio.h>
 
 extern "C"{
 #define __STDC_FORMAT_MACROS
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavfilter/avfiltergraph.h"
-#include "libavfilter/buffersink.h"
-#include "libavfilter/buffersrc.h"
-#include "libavutil/opt.h"
-#include "libavutil/pixdesc.h"
-#include "libavutil/timestamp.h"
+#include "ffmpeg/libavcodec/avcodec.h"
+#include "ffmpeg/libavformat/avformat.h"
+#include "ffmpeg/libavfilter/avfilter.h"
+#include "ffmpeg/libavfilter/buffersink.h"
+#include "ffmpeg/libavfilter/buffersrc.h"
+#include "ffmpeg/libavutil/opt.h"
+#include "ffmpeg/libavutil/pixdesc.h"
+#include "ffmpeg/libavutil/timestamp.h"
     
-#include "libavutil/channel_layout.h"
-#include "libavutil/common.h"
-#include "libavutil/imgutils.h"
-#include "libavutil/mathematics.h"
-#include "libavutil/samplefmt.h"
-    
-#include "libswscale/swscale.h"
+#include "ffmpeg/libavutil/channel_layout.h"
+#include "ffmpeg/libavutil/common.h"
+#include "ffmpeg/libavutil/imgutils.h"
+#include "ffmpeg/libavutil/mathematics.h"
+#include "ffmpeg/libavutil/samplefmt.h"
+#include "ffmpeg/libswscale/swscale.h"
 }
 
 class Pipeline : public QObject {

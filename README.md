@@ -1,8 +1,8 @@
-# FFmpegGUI
+# FFnode 
 
-FFmpegGUI is an open-source video filter graph editor based on **Qt** and **FFmpeg**.
+FFnode is an open-source video filter graph editor 
 
-**FFmpegGUI is free software licensed under the term of LGPL v2.1.**
+> NOTE: unstable code, very beta
 
 ## Allows:
 
@@ -14,16 +14,22 @@ FFmpegGUI is an open-source video filter graph editor based on **Qt** and **FFmp
 - play preview
 - inspect properties of connections between filters
 
-## Requirments:
-
-- FFmpeg 3.2.4
-- Qt4
-
-## How to install:
+## How to compile
 
 - ./configure
 - make
 
+## Developer Requirments:
+
+- FFmpeg 3.2.4
+- Qt5
+
 ## How it looks: 
 
-![ukazka](https://cloud.githubusercontent.com/assets/28718008/26083055/bad1bb3a-39d3-11e7-9924-ec5c3ab04481.png)
+!]\(ffnode.gif)
+
+## Credits 
+
+* FFmpegGUI (code was ported to qt5 and more recent ffmpeg)
+
+> FFnode (and FFmpegGUI) is free software licensed under the term of LGPL v2.1.**

@@ -75,7 +75,6 @@ void Player::runPlaying(){
     AVFrame * filt_frame = av_frame_alloc();
     AVPacket packet;
     int ret=0;
-    
     while(1)
     {
         if(av_read_frame(pipeline->getFormat(), &packet) < 0){
@@ -86,9 +85,11 @@ void Player::runPlaying(){
         {
             av_frame_unref(frame);
             int frameFinished;
+			
             if(!(avcodec_decode_video2( pipeline->getCodec(), frame, 
                                         &frameFinished, &packet) > 0))
             {
+				
                 av_free_packet(&packet);
                 continue;
             }
@@ -110,9 +111,9 @@ void Player::runPlaying(){
                 if(stoped){
                     QEventLoop l;
                     connect( btn, SIGNAL( pressed() ), &l, SLOT(quit()) );
-                    l.exec();
+					l.exec();
                 }
-                QApplication::processEvents();
+				QApplication::processEvents();
                 emit frameFinishedSig();
                 
                 QEventLoop l2;
@@ -134,9 +135,11 @@ void Player::runPlaying(){
                     opened = true;
                 }
                 else if(!btn->isVisible()) break;
-                emit sendingImage(frameToQImage(filt_frame));
+                
+				emit sendingImage(frameToQImage(filt_frame));
                 av_frame_unref(filt_frame);
                 av_frame_unref(frame);
+			
             }
         }
         av_free_packet(&packet);
@@ -146,6 +149,7 @@ void Player::runPlaying(){
     av_frame_free(&filt_frame);
     emit playFinished();
     emit playFinished2(this);
+
 }
 //------------------------------------------------------------------------------
 
@@ -175,29 +179,40 @@ void Player::initializeButton(int w, int h){
  */
 
 QImage Player::frameToQImage(AVFrame * filt_frame){
-    
+	int w = filt_frame->width;
+    int h = filt_frame->height;
+	
+	QImage im = QImage(w,h,QImage::Format_RGB888);
+
     SwsContext   *sws_ctx = NULL;
     AVFrame * frameRGB = av_frame_alloc();
-    int w = filt_frame->width;
-    int h = filt_frame->height;
+	bool scale = true;
+	
+	if( scale ){
+		/*
+		int num_bytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, filt_frame->width, filt_frame->height, 32);
+		uint8_t* buf = (uint8_t *)av_malloc(num_bytes * sizeof(uint8_t));
+		int size = av_image_fill_arrays(frameRGB->data, frameRGB->linesize, buf, AV_PIX_FMT_RGB24, filt_frame->width, filt_frame->height, 32);
+		*/
+		
+		uint8_t pomUi[avpicture_get_size(AVPixelFormat::AV_PIX_FMT_RGB24,w,h)];
+		int num_bytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, filt_frame->width, filt_frame->height, 32);
+		uint8_t* buf = (uint8_t *)av_malloc(num_bytes * sizeof(uint8_t));
+		int size = av_image_fill_arrays(frameRGB->data, frameRGB->linesize, buf, AV_PIX_FMT_RGB24, filt_frame->width, filt_frame->height, 32);
+		//avpicture_fill((AVPicture *)frameRGB, pomUi, AV_PIX_FMT_RGB24,w, h);
+		
+		sws_ctx = sws_getCachedContext(sws_ctx,w, h, pipeline->getCodec()->pix_fmt,
+				w, h, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
 
-    uint8_t pomUi[avpicture_get_size(AVPixelFormat::AV_PIX_FMT_RGB24, 
-        w,h)];
-    avpicture_fill((AVPicture *)frameRGB, pomUi, AV_PIX_FMT_RGB24,
-        w, h);
+ 	    sws_scale(sws_ctx, filt_frame->data, filt_frame->linesize, 0, 
+			h, frameRGB->data, frameRGB->linesize);
 
-    sws_ctx = sws_getCachedContext(sws_ctx,w, h, pipeline->getCodec()->pix_fmt,
-            w, h, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
-
-    sws_scale(sws_ctx, filt_frame->data, filt_frame->linesize, 0, 
-        h, frameRGB->data, frameRGB->linesize);
-
-
-    QImage im = QImage(w,h,QImage::Format_RGB888);
-
-    for(int y=0;y<h;y++)
-       memcpy(im.scanLine(y),frameRGB->data[0]+y*frameRGB->linesize[0],w*3);
-    
+		for(int y=0;y<h;y++)
+		   memcpy(im.scanLine(y),frameRGB->data[0]+y*frameRGB->linesize[0],w*3);		
+	}else{
+		for(int y=0;y<h;y++)
+			memcpy(im.scanLine(y),filt_frame->data[0]+y*filt_frame->linesize[0],w*3);
+	}
     sws_freeContext(sws_ctx);
     av_frame_free(&frameRGB);
     

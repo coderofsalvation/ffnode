@@ -32,12 +32,12 @@
 FilterButton::FilterButton(const QString &name) {
     
     this->setProperty("name", name);
-    this->setGeometry(QRect(0, 0, 200,50));
+    this->setGeometry(QRect(0, 0, 200,90));
     this->setFixedWidth(200);
-    this->setIconSize(QSize(200,50));
+    this->setIconSize(QSize(200,90));
     this->setIcon(createPixmap());
-    this->setFixedSize(200,50);
-    
+    this->setFixedSize(200,40);
+   	this->setFlat(true);
 }
 
 FilterButton::FilterButton(const FilterButton& orig) {}
@@ -50,8 +50,8 @@ FilterButton::~FilterButton() {}
  */
 
 QPixmap FilterButton::createPixmap() {
-	int w = 150;
-	int h = 30;
+	int w = 170;
+	int h = 50;
     QPixmap p(":/filt1.png");
     QPixmap finalIcon = p.scaled(w,h);
     
@@ -59,6 +59,7 @@ QPixmap FilterButton::createPixmap() {
     QFont font = painter.font();
     //font.setWeight(QFont::Bold);
     font.setPointSize ( 9 );
+	painter.setPen( QColor(200,200,200) );
     painter.setFont(font); 
 
     QRect r(0, 0, w,h);
@@ -90,29 +91,29 @@ void FilterButton::drawPixmap(QPainter * painter, const QSize & size){
     
     if(size.width() == 1){
         painter->drawImage( QRect(1,9,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,13).toImage(),
                             QRect(0,0,18,18));
     }
     else if(size.width() == 2){
         painter->drawImage(  QRect(0,2,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,13).toImage(),
                             QRect(0,0,18,18));
         painter->drawImage(  QRect(0,30,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,13).toImage(),
                             QRect(0,0,18,18));
     }
     
     if(size.height() == 1){
         painter->drawImage(  QRect(182,16,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,13).toImage(),
                             QRect(0,0,18,18)); 
     }
     else if(size.height() == 2){
         painter->drawImage(  QRect(182,2,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,11).toImage(),
                             QRect(0,0,18,18));
         painter->drawImage( QRect(182,30,18,18), 
-                            QPixmap(":/pad1.png").scaled(11,11).toImage(),
+                            QPixmap(":/pad1.png").scaled(13,13).toImage(),
                             QRect(0,0,18,18));
     }
 }

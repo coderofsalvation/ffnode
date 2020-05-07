@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 
@@ -37,7 +37,9 @@
 FilterParamsList::FilterParamsList() {
     ui.setupUi(this);
     ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
-    
+	ui.tableWidget->verticalHeader()->setVisible(false); 
+	ui.tableWidget->horizontalHeader()->hide();
+    ui.tableWidget->setShowGrid(false);
     ui.tableWidget->setRowCount(0); 
 }
 
@@ -67,6 +69,9 @@ void FilterParamsList::initializeWidget(Filter* f){
     ui.tableWidget->setHorizontalHeaderItem(0, h);
     ui.tableWidget->setHorizontalHeaderItem(1, h2);
     ui.tableWidget->setRowCount(f->params.size());
+	QHeaderView *verticalHeader = ui.tableWidget->verticalHeader();
+	verticalHeader->setSectionResizeMode(QHeaderView::Fixed);
+	verticalHeader->setDefaultSectionSize(20);
     
     int i = 0;
     int j = 0;

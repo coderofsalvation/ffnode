@@ -241,7 +241,13 @@ public slots:
      */
     void clearAll();
     //--------------------------------------------------------------------------
-    
+
+   /**
+     * Clears canvas (scene) and add default network
+     */
+    void clearAllDefault();
+    //--------------------------------------------------------------------------
+        
     /**
      *  Plays preview.
      */

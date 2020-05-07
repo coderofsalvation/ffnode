@@ -1,5 +1,5 @@
-/*********************************************************************************
 
+/*********************************************************************************
     FFmpegGUI: filter graph editor based on Qt and FFmpeg
     Copyright (C) 2017 Roman Sichkaruk <romansichkaruk@gmail.com>
 
@@ -25,6 +25,7 @@
 #include "filtersList.h"
 #include "pipelineParser.h"
 #include "pipelineSaver.h"
+#include "default.h"
 #include <stdio.h>
 
 /**
@@ -49,13 +50,15 @@ MainWindow::MainWindow() {
     this->scene->setFilterParamList(filterList);
     
     filterBar = new FiltersList();
+	filterBar->hide();
     this->addDockWidget(Qt::LeftDockWidgetArea, filterBar);
     
     fileMenu = menuBar()->addMenu(tr("&File"));
-    QMenu * submenu = fileMenu->addMenu(tr("&Open"));
+	fileMenu->addAction(clear);
+	QMenu * submenu = fileMenu->addMenu(tr("&Open"));
     submenu->addAction(newAct);
-    submenu = fileMenu->addMenu(tr("&Save"));
-    submenu->addAction(save);
+	submenu = fileMenu->addMenu(tr("&Save"));
+	submenu->addAction(save);
     submenu->addAction(saveXml);
     submenu->addAction(saveTxt);
     fileMenu->addAction(exitAll);
@@ -65,6 +68,7 @@ MainWindow::MainWindow() {
     fileMenu = menuBar()->addMenu(tr("&Exit"));
     fileMenu->addAction(exitAll);
     
+	this->clearAllDefault();
     this->show();
     insWidget = new InspectionWidget();
     this->addDockWidget(Qt::RightDockWidgetArea, insWidget);
@@ -129,7 +133,9 @@ void MainWindow::initializeHelp(){
 void MainWindow::prepareScene(){
     c = new Connectivity();
     this->scene = new Scene(c);
+	this->scene->setMainWindow(this);
     this->scene->setSceneRect(0.0, 0.0,1500.0,1500.0);
+	this->scene->setBackgroundBrush(QColor(25, 22, 20));
     this->acceptDrops(); 
     this->view = new View();
     this->view->setScene(this->scene);
@@ -161,10 +167,12 @@ void MainWindow::showP(){
 void MainWindow::showF(){
     if(filterBar->isVisible()){
         filterBar->hide();
+		fileToolBar->hide();
         showFList->setIcon(QIcon(":/notcheck.png"));
     }
     else{
         filterBar->show();
+		fileToolBar->show();
         showFList->setIcon(QIcon(":/checked.png"));
     }
 }
@@ -204,6 +212,7 @@ void MainWindow::exitP(){
 void MainWindow::createActions()
 {
     fileToolBar = addToolBar(tr("Quick actions"));
+	fileToolBar->hide();
     
     newAct = createNewAction("Load graph.", ":/file.png", Qt::Key_G);
     connect(newAct, SIGNAL(triggered()), this, SLOT(addInput()));
@@ -211,17 +220,17 @@ void MainWindow::createActions()
     save = createNewAction("Save video.", ":/save.png", Qt::Key_S);
     connect(save, SIGNAL(triggered()), this, SLOT(saveVideo()));
     
-    saveXml = createNewAction("Save graph to XML.", ":/xml.png", Qt::Key_X);
+    saveXml = createNewAction("Save graph to XML.", ":/xml.png", Qt::Key_E);
     connect(saveXml, SIGNAL(triggered()), this, SLOT(saveXML()));
     
-    saveTxt = createNewAction("Save graph to txt file.", ":/savetext.png", Qt::Key_L);
+    saveTxt = createNewAction("Save graph to txt file.", ":/savetext.png", Qt::Key_T);
     connect(saveTxt, SIGNAL(triggered()), this, SLOT(saveTXT()));
     
     remove = createNewAction("Delete element.",":/remove.png", Qt::Key_Delete);
     connect(remove, SIGNAL(triggered()), this, SLOT(removeItem()));
     
-    clear = createNewAction("Clear canvas.",":/clear.png",Qt::Key_C);
-    connect(clear, SIGNAL(triggered()), this, SLOT(clearAll()));
+    clear = createNewAction("New",":/clear.png",Qt::Key_C);
+    connect(clear, SIGNAL(triggered()), this, SLOT(clearAllDefault()));
     
     wire = createNewAction("Create a connection between two pads.", ":/wire.png", Qt::Key_W);
     connect(wire, SIGNAL(triggered()), this, SLOT(connectWire()));
@@ -247,7 +256,7 @@ void MainWindow::createActions()
     
     exitAll = new QAction("Exit program.", this);
     exitAll->setIcon(QIcon(":/exit.png"));
-    exitAll->setShortcut(Qt::Key_E);
+    //exitAll->setShortcut(Qt::Key_E);
     exitAll->setStatusTip(tr("Exit program."));
     connect(exitAll, SIGNAL(triggered()), this, SLOT(exitP()));
     
@@ -259,7 +268,7 @@ void MainWindow::createActions()
     
     showPList = new QAction("Show/hide parameters list.", this);
     showPList->setIcon(QIcon(":/checked.png"));
-    showPList->setShortcut(Qt::Key_Y);
+    showPList->setShortcut(Qt::Key_X);
     showPList->setStatusTip(tr("&Show/hide parameters list."));
     connect(showPList, SIGNAL(triggered()), this, SLOT(showP()));
 }
@@ -354,10 +363,8 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 void MainWindow::connectWire(){
     Pad * in = NULL;
     Pad * out = NULL;
-	printf("!\n");
-    for(auto f : scene->filters){
-		printf("1\n");
-        if(f->getInPad() != NULL && f->getInPad()->isSelected()){
+	for(auto f : scene->filters){
+		if(f->getInPad() != NULL && f->getInPad()->isSelected()){
             in = f->getInPad();
             in->setSelected(false);
             in->setIsSelected(false);
@@ -376,12 +383,11 @@ void MainWindow::connectWire(){
             out->setIsSelected(false);
         }
     }
-	printf("in %i\n",in);
-	printf("out %i\n",out);
+	
 	printf("3\n");
 	printf("4\n");
     if( in != NULL && out != NULL && 
-		in->getParent() != out->getParent() && 
+		//in->getParent() != out->getParent() && 
 		!in->connectedTo() && !out->connectedTo()){
 		printf("5\n");
         Wire * w = new Wire(scene);
@@ -454,6 +460,7 @@ void MainWindow::justContinue(){
 void MainWindow::removeDock(Player * p){
    this->removeDockWidget(p->btn->parentWidget());
 }
+
 //------------------------------------------------------------------------------
 
 /**
@@ -463,7 +470,7 @@ void MainWindow::removeDock(Player * p){
  */
 
 void MainWindow::receivedSize(const QSize& size){
-    shower->show();
+	shower->show();
     int minWidth=300>size.width()?size.width():300;
     shower->setGeometry(shower->x(),shower->y(), minWidth,minWidth*
                                         size.height()/size.width());
@@ -472,8 +479,9 @@ void MainWindow::receivedSize(const QSize& size){
     
     shower->setMinimumSize(minWidth, minWidth*size.height()/size.width());
     shower->setMaximumSize(size.width(),size.height());
-    shower->setFlat(true);
+    shower->setFlat(true);    
 }
+
 //------------------------------------------------------------------------------
 
 /**
@@ -524,7 +532,7 @@ void MainWindow::playVideo(){
         connect(nthtr, SIGNAL(started()), p, SLOT(runPlaying()) );
         connect(nthtr, SIGNAL(finished()), actualPipeline, SLOT(deleteLater2()) );
         connect(nthtr, SIGNAL(finished()), nthtr, SLOT(deleteLater()));
-        
+		
         nthtr->start();
        
     }
@@ -602,7 +610,19 @@ void MainWindow::clearAll(){
                 c->removeWires(f->getInPad(), f->getOutPad2());
             scene->filters.removeOne(f);
             delete f;
-    }
+    }	
+    scene->update();
+}
+
+/**
+ * Clears canvas (scene).
+ */
+
+void MainWindow::clearAllDefault(){
+	this->clearAll();
+	QString filename = QString::fromUtf8(default_xml, default_xml_len);
+	PipelineParser pp(scene);
+	pp.parseXml(filename);
     scene->update();
 }
 //------------------------------------------------------------------------------
@@ -862,7 +882,7 @@ Pad * MainWindow::inputPad(){
         if(!f->getInPad()) pad=f->getOutPad();
     }   
     if(!pad)
-        throw std::runtime_error("No input filter.");
+        throw std::runtime_error(" filter.");
     return pad;
 }
 //------------------------------------------------------------------------------
